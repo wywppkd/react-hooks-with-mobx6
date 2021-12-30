@@ -28,6 +28,8 @@
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.27",
     "lint-staged": "^10.0.7",
+    "mobx": "^6.3.10",
+    "mobx-react": "^7.2.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "umi": "^3.2.27",
