@@ -70,7 +70,7 @@ export const useRootStore = () => {
 };
 ```
 
-## 3. 通过根组件将 context 对象传递给所有组件
+## 3. 将 context 对象传递给所有组件
 
 ```ts
 // src/app.tsx
