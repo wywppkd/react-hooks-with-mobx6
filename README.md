@@ -105,3 +105,9 @@ const Index = () => {
 
 export default observer(Index);
 ```
+
+---
+
+## 总结
+
+主要思路是借助 React Context 将 mobx store 传给任意组件, 通过自定义hook + useContext 读取 context 数据
