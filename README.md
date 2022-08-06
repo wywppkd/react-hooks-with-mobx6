@@ -1,4 +1,8 @@
-# react hooks + mobx6(多个 store) 结合使用
+# React Hooks + Mobx6 最佳实践
+
+> 自从用了 Mobx 再也回不去了! 从 Redux 到 Dva, 再到 Mobx, 我发现 Mobx 比 Redux 简单方便太多了, 尤其是我参与的项目需要用到全局状态的场景并不多, Mobx 已经完全足够了。但是看过 Mobx 文档并没有一个干脆的 example 告诉我怎么用, 于是有了这篇文章, 这可能是 React Hooks + Mobx 的最佳实践
+
+> 鉴于目前主流开发用都是用的函数组件+hooks, 本文不考虑类组件场景
 
 - 架构: Umi + React Hooks + Mobx6 + TypeScript
 - 简述:
@@ -110,4 +114,4 @@ export default observer(Index);
 
 ## 总结
 
-主要思路是借助 React Context 将 mobx store 传给任意组件, 通过自定义hook + useContext 读取 context 数据
+主要思路是借助 React Context 将 mobx store 传给任意组件, 通过自定义 hook + useContext 读取 context 数据
