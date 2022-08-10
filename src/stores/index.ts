@@ -8,10 +8,10 @@ export const stores = {
   countStore: new CountStore(),
 };
 
-// 创建 context 对象: 值为 mobx 的 stores
+// 创建 React.Context
 export const StoreContext = createContext(stores);
 
-// 自定义 hook(方便复用): 获取 context对象的 value 值
+// 自定义 hook: 方便获取 React Context 的 value
 export const useRootStore = () => {
   return useContext(StoreContext);
 };

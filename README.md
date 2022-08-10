@@ -1,16 +1,31 @@
 # React Hooks + Mobx6 最佳实践
 
-> 自从用了 Mobx 再也回不去了! 从 Redux 到 Dva, 再到 Mobx, 我发现 Mobx 比 Redux 简单方便太多了, 尤其是我参与的项目需要用到全局状态的场景并不多, Mobx 已经完全足够了。但是看过 Mobx 文档并没有一个干脆的 example 告诉我怎么用, 于是有了这篇文章, 这可能是 React Hooks + Mobx 的最佳实践
+> 自从用了 Mobx 再也回不去了! 从 Redux 到 Dva, 再到 Mobx, 我发现 Mobx 比 Redux 简单方便太多了, 尤其是我参与的项目需要用到全局状态的场景并不多, Mobx 已经完全足够了。但是看过 Mobx 文档后发现并没有一个直接明了的 example 告诉我怎么用, 于是有了这篇文章, 当前 mobx 最新版本是 v6, 所以下面介绍 v6 推荐的方式去使用 mobx, 应该也是目前最简洁的上手教程了
 
-> 鉴于目前主流开发用都是用的函数组件+hooks, 本文不考虑类组件场景
+> 鉴于目前主流开发用都是用的函数组件, 本文不考虑类组件场景
 
-- 架构: Umi + React Hooks + Mobx6 + TypeScript
-- 简述:
-  1. 创建 mobx stores
-  2. 通过 context 对象将 stores 传递给所有组件
-  3. 任意组件可通过 useContext 读取 stores
+## 1. 了解 Mobx 的核心概念
 
-## 1. 创建 store
+> Mobx 核心与开发模式与 Vue 相似, API 也是类似的
+
+1. observable state: 被观察的 state
+2. actions: 用来更新 state 的方法
+3. computed: 计算属性, 类似 vuex 的 getter
+4. Reactive React components: 让 React 组件具有响应性(当 state 改变时, 自动更新 react 组件)
+
+## 2. 简单上手
+
+> 架构: Umi3 + React Hooks + Mobx6 + TypeScript
+
+```bash
+npm i mobx@6
+
+npm i mobx-react@7 # 支持函数组件和类组件
+# or
+npm i mobx-react-lite@3 # 轻量级 mobx-react, 仅支持函数组件
+```
+
+### 2.1 创建 stores
 
 ```ts
 // src/stores/CountStore.ts
@@ -51,7 +66,7 @@ export default class UserStore {
 }
 ```
 
-## 2. 创建 context 对象(value 值为所有 store 的实例)
+### 3.2 借助 React Context 将 stores 传递下去
 
 ```ts
 // src/stores/index.ts
@@ -74,20 +89,18 @@ export const useRootStore = () => {
 };
 ```
 
-## 3. 将 context 对象传递给所有组件
-
 ```ts
 // src/app.tsx
 import React from 'react';
-import { stores, StoreContext } from './stores';
+import { stores, StoreContext } from '@/stores';
 
-export function rootContainer(container: Element) {
+export function rootContainer(container: React.ReactNode) {
   // 通过根组件将 context 对象传递给所有组件
   return React.createElement(StoreContext.Provider, { value: stores }, container);
 }
 ```
 
-## 4. 任意组件读取 store
+### 3.3 任意组件读取 stores
 
 ```tsx
 // src/pages/index.tsx
@@ -107,11 +120,25 @@ const Index = () => {
   );
 };
 
+// observer: 将 React Component 变为 Reactive React components, 方便重新渲染
 export default observer(Index);
 ```
 
----
+## 4. 常用 API
 
-## 总结
+- makeAutoObservable
 
-主要思路是借助 React Context 将 mobx store 传给任意组件, 通过自定义 hook + useContext 读取 context 数据
+  - 将属性变为 observable state
+  - 将方法变为 action
+  - 将 get xx 方法变为 computed
+  - ...
+
+- observer: 高阶组件, 将 React components 变为 Reactive React components, 也就是当 observable state 变化时自动重新渲染
+- autorun: 监听 state 变化并执行副作用, 类似 useEffect, 无需手动管理 deps
+
+## 4. Q & A
+
+- 为什么不用 @observable 等装饰器
+  - 装饰器处于提案阶段, 最终版尚不确定, 详见官方文档(https://mobx.js.org/enabling-decorators.html)
+- 为什么使用 React Context 引入 store, 而不是直接引入 store
+  - 直接引入 store 不利于单元测试(https://mobx.js.org/react-integration.html#using-external-state-in-observer-components)
